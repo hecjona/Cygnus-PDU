@@ -1,0 +1,111 @@
+﻿<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=320; user-scalable=no" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>CygnusPDU Mobile</title>
+
+	 	<link rel="stylesheet" href="jquery.mobile/jquery.mobile-1.1.0.min.css" />
+	
+	    <script src="jquery.mobile/jquery-1.7.2.min"></script>
+       <script type="text/javascript" >
+           $(document).bind("mobileinit", function () {
+               //apply overrides here
+               $.mobile.allowCrossDomainPages = true;
+               $.support.cors = true;
+           });
+       </script>
+		<script src="jquery.mobile/jquery.mobile-1.1.0.min.js"></script>
+
+	  <script type="text/javascript" charset="utf-8" src="phonegap-1.4.1.js"></script>
+	  <script type="text/javascript" charset="utf-8">
+      
+        var onDeviceReady = function() {
+            
+        };
+
+        function init() {
+            document.addEventListener("deviceready", onDeviceReady, true);
+            $("#edUser").focus();
+            $("#btLogin").click(btLogin_click);
+
+        }   
+        function btLogin_click(e) {
+            $("#txMsg").html("<img src='images/loading_h.gif' />");
+        	$.get("http://www.cygnusenergy.mx/cygnuspdu/controller.php",{
+        		 action:"valida_user",
+        		 user: $("#edUser").val(),
+        		 password:$("#edPass").val(),
+        		 service: $("#edNoServicio").val(),
+        		 }, endValida_User);
+        }
+        function endValida_User(xml) {
+            $(xml).find("response").each(function(i){
+				ShowMsg($(this).find("result_text").text());
+				if ($(this).find("result").text()=="ok"){
+				    window.location = "http://www.cygnusenergy.mx/cygnuspdu/medicion_mobile.php";
+				}
+			});
+		} 
+		function ShowMsg(sMsg){
+		   $("#txMsg").html(sMsg);
+		}
+		function ShowPage(page_id){
+			$('.api-div').hide();
+			$('#'+page_id).show();
+		}
+</script>  
+
+  </head>
+  <body onload="init();" id="stage" class="theme">
+<!---------- BODY .------>
+<!-- Home -->
+<div data-role="page" id="page1">
+    
+    
+    <!------ LOGIN ----->
+    <div data-role="content" class="api-div" id="dvLogin">
+	    
+    	<div style=" text-align:center">
+            <img style="width: 150px; height: 65px" src="images/logo_srv.png">
+        </div>
+        
+
+            <div data-role="fieldcontain">
+                <label for="edNoServicio">
+                    Cygnus ID
+                </label>
+                <input name="" id="edNoServicio" placeholder="" value="" type="text">
+           </div>
+           <div data-role="fieldcontain">
+                <label for="edUser">
+                    Usuario
+                </label>
+                <input name="" id="edUser" placeholder="" value="" type="text">
+            </div>
+           <div data-role="fieldcontain">
+                <label for="edPass">
+                    Contraseña
+                </label>
+                <input name="" id="edPass" placeholder="" value="" type="password">
+            </div>
+        <h5 id="txMsg"></h5>
+            <input id="btLogin" value="Iniciar Sesion" type="submit">
+            
+       
+
+        <!--------  FOOTER  ---------------->
+	    <div data-theme="b" data-role="footer" data-position="fixed">
+	        <h3 style="text-align:center;">
+	            &copy; Cygnus Energy 2013
+	        </h3>
+	    </div>
+	    <!--------- FOOTER END ------------>
+    </div>    
+    <!---- LOGIN END --->
+    
+    
+</div>
+<!---------- BODY ------->  
+  </body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=320; user-scalable=no" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>CygnusPDU Mobile</title>
+
+	 	<link rel="stylesheet" href="jquery.mobile/jquery.mobile-1.1.0.min.css" />
+	
+	    <script src="jquery.mobile/jquery-1.7.2.min"></script>
+		<script src="jquery.mobile/jquery.mobile-1.1.0.min.js"></script>
+
+	  <script type="text/javascript" charset="utf-8" src="phonegap-1.4.1.js"></script>
+	  <script type="text/javascript" charset="utf-8">
+      
+        var onDeviceReady = function() {
+            
+        };
+
+        function init() {
+            document.addEventListener("deviceready", onDeviceReady, true);
+            $("#edUser").focus();
+            $("#btLogin").click(btLogin_click);
+        }   
+        function btLogin_click(e){
+        	$.get("http://192.168.1.99/controller.php",{
+        		 action:"valida_user",
+        		 user: $("#edUser").val(),
+        		 password:$("#edPass").val(),
+        		 service:0
+        		 }, endValida_User);
+        }
+         function endValida_User(xml){
+			$(xml).find("response").each(function(i){
+				ShowMsg($(this).find("result_text").text());
+				if ($(this).find("result").text()=="ok"){
+					ShowPage("dvDash");					
+				}
+			});
+		} 
+		function ShowMsg(sMsg){
+		   $("#txMsg").html(sMsg);
+		}
+		function ShowPage(page_id){
+			$('.api-div').hide();
+			$('#'+page_id).show();
+		}
+</script>  
+
+  </head>
+  <body onload="init();" id="stage" class="theme">
+<!---------- BODY .------>
+<!-- Home -->
+<div data-role="page" id="page1">
+    
+    
+    <!------ LOGIN ----->
+    <div data-role="content" class="api-div" id="dvLogin">
+	    <!--- ------ HEADER --------->
+	    <div data-theme="b" data-role="header" data-position="fixed">
+	        <h1>
+	            Cygnus Mobile
+	        </h1>
+	    </div>
+	    <!--------- HEADER END ----->
+    	<div style=" text-align:center">
+            <img style="width: 150px; height: 65px" src="images/logo.png">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="edUser">
+                Usuario
+            </label>
+            <input name="" id="edUser" placeholder="" value="" type="text">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="edPass">
+                Contraseña
+            </label>
+            <input name="" id="edPass" placeholder="" value="" type="password">
+        </div>
+        <input id="btLogin" value="Iniciar Sesion" type="submit">
+        <h5 id="txMsg">
+        </h5>
+        <!--------  FOOTER  ---------------->
+	    <div data-theme="b" data-role="footer" data-position="fixed">
+	        <h3>
+	            &copy; Cygnus Energy 2013
+	        </h3>
+	    </div>
+	    <!--------- FOOTER END ------------>
+    </div>    
+    <!---- LOGIN END --->
+    <!-------------- DASHBOARD  ---------------------------------------------->
+    <div data-role="content" class="api-div" id="dvDash">
+    <div data-theme="b" data-role="header" data-position="fixed">
+        <h1>
+            Cygnus Mobile
+        </h1>
+        <div data-role="fieldcontain">
+            <label for="mnuOpciones">
+                Seleccione una vista
+            </label>
+            <select id="mnuOpciones" name="">
+                <option value="dashboard">
+                    Equipos
+                </option>
+                <option value="alarms">
+                    Historial de Alarmas
+                </option>
+                <option value="historial">
+                    Historial de mediciones
+                </option>
+            </select>
+        </div>
+    </div>
+    </div>
+    <!--------------- DASHBOARD END --------------------------------------------->
+    
+</div>
+<!---------- BODY ------->  
+  </body>
+</html>
