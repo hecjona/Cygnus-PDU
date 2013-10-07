@@ -26,23 +26,40 @@
 
         function init() {
             document.addEventListener("deviceready", onDeviceReady, true);
-            $("#edUser").focus();
+            $("#edNoServicio").focus();
             $("#btLogin").click(btLogin_click);
-
+			Load_saved_data();
         }   
+        function Load_saved_data(){
+          if (localStorage['cygnuspdu.login.save_data']==""){
+            return;
+          }
+          if (localStorage['cygnuspdu.login.save_data']=="0"){
+            return;
+          }
+          $("#edUser").val(localStorage['cygnuspdu.login.username']);
+          $("#edPass").val(localStorage['cygnuspdu.login.password']);
+          $("#edNoServicio").val(localStorage['cygnuspdu.login.noservicio']);
+        }
         function btLogin_click(e) {
-            $("#txMsg").html("<img src='images/loading_h.gif' />");
+            if ($("#chkSave").is(":checked")){
+              localStorage['cygnuspdu.login.save_data']="1"; 
+              localStorage['cygnuspdu.login.username']=$("#edUser").val();
+              localStorage['cygnuspdu.login.noservicio']=$("#edNoServicio").val();
+              localStorage['cygnuspdu.login.password']=$("#edPass").val();
+            }
+            $("#txMsg").html("<h3>Validando datos...</h3><img src='images/loading_h.gif' />");            
         	$.get("http://www.cygnusenergy.mx/cygnuspdu/controller.php",{
         		 action:"valida_user",
         		 user: $("#edUser").val(),
         		 password:$("#edPass").val(),
         		 service: $("#edNoServicio").val(),
-        		 }, endValida_User);
+        		 }, endValida_User).error(function(){ $("#txMsg").html("Error al conectar con el servidor");  });
         }
         function endValida_User(xml) {
             $(xml).find("response").each(function(i){
-				ShowMsg($(this).find("result_text").text());
-				if ($(this).find("result").text()=="ok"){
+				ShowMsg($(this).find("result_text").text()).delay(1000);
+				if ($(this).find("result").text()=="ok"){					
 				    window.location = "http://www.cygnusenergy.mx/cygnuspdu/medicion_mobile.php";
 				}
 			});
@@ -89,8 +106,13 @@
                 </label>
                 <input name="" id="edPass" placeholder="" value="" type="password">
             </div>
-        <h5 id="txMsg"></h5>
-            <input id="btLogin" value="Iniciar Sesion" type="submit">
+      
+        <div data-role="fieldcontain">
+        	<label for="chkSave">Guardar datos de acceso</label>
+        	<input type="checkbox" id="chkSave" checked/>
+        </div>
+         <div id="txMsg" style="text-align:center; font-size:14px;"></div>
+        <input id="btLogin" value="Iniciar Sesion" type="submit">
             
        
 
