@@ -59,8 +59,8 @@
         function endValida_User(xml) {
             $(xml).find("response").each(function(i){				
 				if ($(this).find("result").text()=="ok"){					
-				    window.location = "http://www.cygnusenergy.mx/cygnuspdu/medicion_mobile.php";
 				    $("#txMsg").html("<h3>Inicando Sesion...<br>"+$(this).find("result_text").text()+"</h3><img src='images/loading_h.gif' />");
+				    window.location = "http://www.cygnusenergy.mx/cygnuspdu/medicion_mobile.php";
 				}
 				else{				
 					ShowMsg($(this).find("result_text").text()).delay(1000);
