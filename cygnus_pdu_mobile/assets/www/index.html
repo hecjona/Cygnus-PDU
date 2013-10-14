@@ -60,7 +60,9 @@
             $(xml).find("response").each(function(i){				
 				if ($(this).find("result").text()=="ok"){					
 				    $("#txMsg").html("<h3>Inicando Sesion...<br>"+$(this).find("result_text").text()+"</h3><img src='images/loading_h.gif' />");
-				    window.location = "http://www.cygnusenergy.mx/cygnuspdu/medicion_mobile.php";
+				    setTimeout(function (){
+				    		window.location = "http://www.cygnusenergy.mx/cygnuspdu/home_mobile.php";
+				    		},1000);
 				}
 				else{				
 					ShowMsg($(this).find("result_text").text()).delay(1000);
